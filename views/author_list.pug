@@ -1,0 +1,22 @@
+extends layout
+
+block content
+    h1= title
+
+    ul
+        each author in all_author
+            li
+                a(href=author.url) #{author.name}
+            if (author.date_of_birth)
+                span #{moment(author.date_of_birth).format('YYYY-MM-DD')} - 
+            else
+                span ? - 
+            if (author.date_of_death)
+                span #{moment(author.date_of_death).format('YYYY-MM-DD')}
+            else
+                span ?
+
+        else
+            li There are no authors
+
+    

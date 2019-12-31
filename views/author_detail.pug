@@ -1,0 +1,26 @@
+extends layout
+
+block content
+
+    h1 Author: #{author.name}
+    if (author.date_of_birth)
+        span #{moment(author.date_of_birth).format('YYYY-MM-DD')} - 
+    else
+        span ? - 
+    if (author.date_of_death)
+        span #{moment(author.date_of_death).format('YYYY-MM-DD')}
+    else
+        span ?
+
+    div(style='margin-left:20px;margin-top:20px')
+
+        h4 Books
+        
+        dl
+        each book in author_books
+            dt 
+            a(href=book.url) #{book.title}
+            dd #{book.summary}
+
+        else
+            p This author has no books.
