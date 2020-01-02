@@ -17,4 +17,4 @@ block content
       span.text-warning #{bookinstance.status} 
       
   if bookinstance.status!='Available'
-    p #[strong Due back:] #{moment(bookinstance.due_back).format('YYYY-MM-DD')}
+    p #[strong Due back:] #{bookinstance.due_back_formatted}

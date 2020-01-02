@@ -1,3 +1,4 @@
+const validator = require('express-validator');
 var Book = require('../models/book');
 var async = require('async');
 var Genre = require('../models/genre');
@@ -37,24 +38,107 @@ exports.genre_detail = function(req, res, next) {
 };
 
 // Display Genre create form on GET.
-exports.genre_create_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: Genre create GET');
+exports.genre_create_get = function(req, res, next) {
+    res.render('genre_form', {title: 'Create Genre'});
 };
 
 // Handle Genre create on POST.
-exports.genre_create_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: Genre create POST');
-};
+exports.genre_create_post = [
+
+    //Validate that the name field is not empty
+    validator.body('name', 'Genre name required').isLength({min: 1}).trim(), 
+
+    //sanitize (escape) the name field
+    validator.sanitizeBody('name').escape(), 
+
+    // Process request after validation and sanitization
+    (req, res, next) => {
+
+        //Extract the validation errors from a request
+        const errors = validator.validationResult(req);
+
+        //Create a genre object with escaped and trimmed data
+        var genre = new Genre(
+            {name: req.body.name }
+        );
+
+        if (!errors.isEmpty()) {
+            // There are errors. Render the form again with sanitized values/ errors
+            res.render('genre_form', 
+                {title: 'Create Genre',
+                 genre: genre, 
+                 errors: errors.array() }
+            );
+            return;
+        }
+        else {
+            //Data form is valid
+            //Check if Genre with same name already exists
+            Genre.findOne({'name': req.body.name})
+                .exec( (err, found_genre) => {
+                if(err) {return next(err); }
+
+                if(found_genre) {
+                    //genre exist, redirect to its detail page
+                    res.redirect(found_genre.url);
+                }
+                else{
+
+                    genre.save( err => {
+                        if(err) {return next(err);}
+
+                        //Genre saved. Redirect to genre detail page
+                        res.redirect(genre.url);
+                    });
+                }
+            });
+        }
+    }
+];
 
 // Display Genre delete form on GET.
 exports.genre_delete_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: Genre delete GET');
+    res.render('genre_form_delete', {title: 'Genre Delete'});
+    
 };
 
 // Handle Genre delete on POST.
-exports.genre_delete_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: Genre delete POST');
-};
+exports.genre_delete_post = [
+    
+    validator.body('name', 'Genre name required').isLength({min: 1}).trim(), 
+    validator.sanitizeBody('name').escape(), 
+    (req, res, next) => {
+
+        const errors = validator.validationResult(req);
+
+        var genre = new Genre(
+            {name: req.body.name }
+        );
+
+        if(!errors.isEmpty()){
+            res.render('genre_form_delete', 
+                {title: 'Genre Delete', 
+                genre: genre, 
+                errors: errors.array()
+                }
+            );
+            return;
+        }
+        else{
+
+        }
+        Genre.deleteOne({'name': req.body.name})
+            .exec((err, results) => {
+                if(err) {return next(err);}
+                if(results==null) {
+                    var err = new Error('No genre with this name');
+                    err.status = 404;
+                    return next(err);
+                }
+                res.redirect('/catalog/genres');
+            })
+    }
+]
 
 // Display Genre update form on GET.
 exports.genre_update_get = function(req, res) {

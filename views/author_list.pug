@@ -7,15 +7,8 @@ block content
         each author in all_author
             li
                 a(href=author.url) #{author.name}
-            if (author.date_of_birth)
-                span #{moment(author.date_of_birth).format('YYYY-MM-DD')} - 
-            else
-                span ? - 
-            if (author.date_of_death)
-                span #{moment(author.date_of_death).format('YYYY-MM-DD')}
-            else
-                span ?
-
+                p #{author.dob_formatted} - #{author.dod_formatted}
+     
         else
             li There are no authors
 

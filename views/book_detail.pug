@@ -27,7 +27,7 @@ block content
                     p.text-warning #{val.status} 
                 p #[strong Imprint:] #{val.imprint}
                 if val.status!='Available'
-                    p #[strong Due back:] #{moment(val.due_back).format('YYYY-MM-DD')}
+                    p #[strong Due back:] #{val.due_back_formatted}
                 p #[strong Id:]&nbsp;
                     a(href=val.url) #{val._id}
 

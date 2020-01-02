@@ -2,7 +2,6 @@ var Book = require('../models/book');
 var Author = require('../models/author');
 var Genre = require('../models/genre');
 var BookInstance = require('../models/bookinstance');
-var moment = require('moment');
 
 var async = require('async');
 
@@ -64,8 +63,9 @@ exports.book_detail = (req, res, next) => {
         //Successfull , so render
         res.render('book_detail', {title: results.book.title, 
             book: results.book, 
-            book_instances: results.book_instance,
-            moment: moment});
+            book_instances: results.book_instance
+            }
+        );
     });
 };
 

@@ -21,7 +21,7 @@ BookInstanceSchema
 
 BookInstanceSchema
 .virtual('due_back_formatted')
-.get(() => {
+.get(function() {
     return moment(this.due_back).format('MMMM Do, YYYY');
 })
 

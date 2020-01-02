@@ -1,5 +1,4 @@
 var BookInstance = require('../models/bookinstance');
-var moment = require('moment');
 
 // Display list of all BookInstances.
 exports.bookinstance_list = function(req, res, next) {
@@ -9,7 +8,7 @@ exports.bookinstance_list = function(req, res, next) {
             if (err) {return next(err);}
             //Successful, so render
             res.render('bookinstance_list', 
-            { 
+                { 
                 title: 'Book Instance List', 
                 bookinstance_list: list_bookinstances
             });
@@ -29,9 +28,9 @@ exports.bookinstance_detail = function(req, res, next) {
             }
             res.render('bookinstance_detail', 
                 {title: 'Copy: '+bookinstance.book.title,
-                bookinstance: bookinstance,
-                moment: moment}
-                );
+                bookinstance: bookinstance
+                }
+            );
         });
     
 };

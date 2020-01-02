@@ -1,3 +1,4 @@
+var config = require('./config.js');
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -12,7 +13,7 @@ var app = express();
 
 //Set up Mongoose connection
 var mongoose = require('mongoose');
-// var mongoDB = '?';
+var mongoDB = config.mongoDB;
 mongoose.connect(mongoDB, {useNewUrlParser: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));

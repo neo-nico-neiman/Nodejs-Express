@@ -41,6 +41,20 @@ AuthorSchema
     return (this.date_of_death.getYear() - this.date_of_birth.getYear()).toString();
 });
 
+//Virtual for formatted DOB
+AuthorSchema
+.virtual('dob_formatted')
+.get(function(){
+    return this.date_of_birth ? moment(this.date_of_birth).format('YYYY/MM/DD') : '?';
+});
+
+//Virtual for formatted DOD
+AuthorSchema
+.virtual('dod_formatted')
+.get(function(){
+    return this.date_of_death ? moment(this.date_of_death).format('YYYY/MM/DD') : '?';
+});
+
 //Virtual for Author's URL
 
 AuthorSchema
