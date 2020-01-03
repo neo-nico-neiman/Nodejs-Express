@@ -1,0 +1,30 @@
+extends layout
+
+block content
+    h1 #{title}: 
+    h3 
+        a(href=bookinstance.book.url) #{bookinstance.book.title}
+    p #[strong Imprint:] #{bookinstance.imprint}
+    if bookinstance.status === 'Loaned'
+        span #[strong Status:] 
+        span.text-danger #{bookinstance.status}
+        p
+        p #[strong Due back:] #{bookinstance.due_back_formatted}
+    else
+        p #[strong Status:] #{bookinstance.status}
+    p.text-danger #[strong #{undefined === message ? '' : message[0] } ]
+    p.text-danger #{undefined === message ? '' : message[1] } 
+    
+    if undefined === message
+        p Do you really want to delete this Book?
+        
+            
+        hr    
+        form(method='POST' action='')
+            div.form-group
+                input#bookinstanceid.form-control(type='hidden', name='bookinstanceid', required='true', value=bookinstance._id )
+
+            button.btn.btn-primary(type='submit') Delete
+    else
+        p 
+            a(href=bookinstance.url) Go back

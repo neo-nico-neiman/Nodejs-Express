@@ -9,7 +9,10 @@ exports.genre_list = function(req, res, next) {
     .sort([['name', 'ascending']])
     .exec( (err, list_genre) => {
         if(err){ return next(err)};
-        res.render('genre_list', {title: 'Genre List', genre_list: list_genre});
+        res.render('genre_list', 
+            {title: 'Genre List', 
+            genre_list: list_genre}
+        );
     });
 };
 
@@ -33,7 +36,11 @@ exports.genre_detail = function(req, res, next) {
             }
             //Successfull, so render
     
-            res.render('genre_detail', {title: 'Genre Detail', genre: results.genre, genre_books: results.genre_books } );
+            res.render('genre_detail', 
+                {title: 'Genre Detail', 
+                genre: results.genre, 
+                genre_books: results.genre_books } 
+            );
     });
 };
 
@@ -98,7 +105,9 @@ exports.genre_create_post = [
 
 // Display Genre delete form on GET.
 exports.genre_delete_get = function(req, res) {
-    res.render('genre_form_delete', {title: 'Genre Delete'});
+    res.render('genre_form_delete', 
+        {title: 'Genre Delete'}
+    );
     
 };
 
