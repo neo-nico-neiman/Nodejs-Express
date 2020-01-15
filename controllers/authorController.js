@@ -3,13 +3,17 @@ const {sanitizeBody} = require('express-validator');
 const async = require('async');
 const Books = require('../models/book');
 const Author = require('../models/author');
+let debug = require('debug')('author');
 
 // Display list of all Authors.
 exports.author_list = function(req, res, next) {
     Author.find()
         .sort([['family_name', 'ascending']])
         .exec((err, author_list) => {
-            if(err){ return next(err)};
+            if(err){ 
+                debug('update error:' + err);
+                return next(err)
+            };
 
             //Successfull, so render
             res.render('author_list', 
@@ -31,10 +35,14 @@ exports.author_detail = (req, res, next) => {
                 .exec(callback)
             }
         }, (err, results) => {
-            if(err) {return next(err);}
+            if(err) {
+                debug('update error:' + err);
+                return next(err);
+            }
             if(results.author==null) {
                 let err = new Error('Author not found');
                 err.status = 404;
+                debug('update error:' + err);
                 return (next(err));
             }
             res.render('author_detail', {title: 'Author Detail', 
@@ -124,7 +132,10 @@ exports.author_create_post = [
                 else{
                 //if !err || !found_author then create a new Author
                 author.save( err => {
-                    if (err) { return next(err); }
+                    if (err) { 
+                        debug('update error:' + err);
+                        return next(err); 
+                    }
 
                     //Successful - redirect to new author record
                     res.redirect(author.url);
@@ -148,7 +159,10 @@ exports.author_delete_get = function(req, res, next) {
                 .exec(callback)
         }
     }, (err, results) => {
-        if (err) { return next(err);}
+        if (err) { 
+            debug('update error:' + err);
+            return next(err);
+        }
         if (results==null){
             res.redirect('/catalog/authors');
         }
@@ -173,7 +187,10 @@ exports.author_delete_post = (req, res, next) => {
           Books.find({ 'author': req.body.authorid }).exec(callback)
         },
     }, (err, results) => {
-        if (err) { return next(err); }
+        if (err) { 
+            debug('update error:' + err);
+            return next(err); 
+        }
         // Success
         if (results.authors_books.length > 0) {
             // Author has books. Render in same way as for GET route.
@@ -187,7 +204,10 @@ exports.author_delete_post = (req, res, next) => {
         else {
             // Author has no books. Delete object and redirect to the list of authors.
             Author.findByIdAndRemove(req.body.authorid, function deleteAuthor (err) {
-                if (err) { return next(err); }
+                if (err) { 
+                    debug('update error:' + err);
+                    return next(err); 
+                }
                 // Success - go to author list
                 res.redirect('/catalog/authors')
             })

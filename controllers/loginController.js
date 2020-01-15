@@ -2,6 +2,7 @@ const {check, validationResult} = require('express-validator');
 const {sanitizeBody} = require('express-validator');
 const bcrypt = require('bcryptjs');
 const Login = require('../models/login');
+let debug = require('debug')('login');
 
 
 exports.logout = function(req,res,next) {
@@ -50,7 +51,7 @@ exports.login_verify = [
             res.redirect('/catalog');
 
         } catch (e) {
-            console.error(e);
+            debug('update error:' + e);
             res.render('login', {message: 'Server Error'});
         }       
       }
@@ -103,14 +104,17 @@ exports.register_post = [
             user.password = await bcrypt.hash(password, salt);
 
             await user.save(err => {
-                if (err) { return next(err); }
+                if (err) { 
+                    debug('login error:' + err);
+                    return next(err); 
+                }
                 res.redirect('/');
                 
         });
 
            
         } catch (err) {
-            console.log(err.message);
+            debug('login error:' + err.message);
             return res.render('register', {message: '500 Error in Saving'});
         }
     }

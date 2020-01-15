@@ -2,13 +2,17 @@ const validator = require('express-validator');
 const Book = require('../models/book');
 const async = require('async');
 const Genre = require('../models/genre');
+let debug = require('debug')('genre');
 
 // Display list of all Genre.
 exports.genre_list = function(req, res, next) {
     Genre.find()
     .sort([['name', 'ascending']])
     .exec( (err, list_genre) => {
-        if(err){ return next(err)};
+        if(err){ 
+            debug('update error:' + err);
+            return next(err)
+        };
         res.render('genre_list', 
             {title: 'Genre List', 
             genre_list: list_genre}
@@ -28,10 +32,14 @@ exports.genre_detail = function(req, res, next) {
                 .exec(callback);
         }
     }, (err, results) => {
-            if(err) {return next(err);}
+            if(err) {
+                debug('update error:' + err);
+                return next(err);
+            }
             if (results.genre==null){//No results
                 let err = new Error('Genre Not Found');
                 err.status = 404;
+                debug('update error:' + err);
                 return next(err);
             }
             //Successfull, so render
@@ -84,7 +92,10 @@ exports.genre_create_post = [
             //Check if Genre with same name already exists
             Genre.findOne({'name': req.body.name})
                 .exec( (err, found_genre) => {
-                if(err) {return next(err); }
+                if(err) {
+                    debug('update error:' + err);
+                    return next(err);
+                }
 
                 if(found_genre) {
                     //genre exist, redirect to its detail page
@@ -93,7 +104,10 @@ exports.genre_create_post = [
                 else{
 
                     genre.save( err => {
-                        if(err) {return next(err);}
+                        if(err) {
+                            debug('update error:' + err);
+                            return next(err);
+                        }
 
                         //Genre saved. Redirect to genre detail page
                         res.redirect(genre.url);
@@ -138,10 +152,14 @@ exports.genre_delete_post = [
         }
         Genre.deleteOne({'name': req.body.name})
             .exec((err, results) => {
-                if(err) {return next(err);}
+                if(err) {
+                    debug('update error:' + err);
+                    return next(err);
+                }
                 if(results==null) {
                     let err = new Error('No genre with this name');
                     err.status = 404;
+                    debug('update error:' + err);
                     return next(err);
                 }
                 res.redirect('/catalog/genres');

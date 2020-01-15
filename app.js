@@ -10,6 +10,8 @@ const catalogRouter = require('./routes/catalog');
 const loginRouter = require('./routes/login');
 const loginController = require('./controllers/loginController');
 const auth = require('./controllers/auth');
+const compression = require('compression');
+const helmet = require('helmet');
 
 const app = express();
 
@@ -20,6 +22,9 @@ mongoose.connect(mongoDB, {useNewUrlParser: true});
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+//Compress all routes
+app.use(compression()); 
+app.use(helmet());
 
 // view engine setup
 //1st set the directory where the views are located
