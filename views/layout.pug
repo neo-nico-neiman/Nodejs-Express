@@ -11,9 +11,16 @@ html(lang= 'en')
   body
     div(class='container-fluid')
       div(class='row')
-        div(class='col-sm-2')
+        div(class='col-sm-4')
           block sidebar
-            ul(class='col-sm-2 sidebar-nav')
+            ul(class='col-sm-4 sidebar-nav')
+              if user 
+                li Hi #{user.firstName}
+                li
+                  a(href='/logout')
+                    button.btn.btn-sm Logout
+                hr
+              
               li 
                   a(href='/catalog') Home
               li 
@@ -26,15 +33,17 @@ html(lang= 'en')
                 a(href='/catalog/bookinstances') All book-instances
               li 
               hr
-              li 
-                a(href='/catalog/author/create') Create new author
-              li 
-                a(href='/catalog/genre/create') Create new genre
-              li 
-                a(href='/catalog/book/create') Create new book
-              li 
-                a(href='/catalog/bookinstance/create') Create new book instance (copy)
+              if user
+                if user.isAdmin
+                  li 
+                    a(href='/catalog/author/create') Create new author
+                  li 
+                    a(href='/catalog/genre/create') Create new genre
+                  li 
+                    a(href='/catalog/book/create') Create new book
+                  li 
+                    a(href='/catalog/bookinstance/create') Create new book instance (copy)
               
                   
-        div(class='col-sm-10')
+        div(class='col-sm-8')
           block content

@@ -1,8 +1,8 @@
-var moment = require('moment');
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const moment = require('moment');
+const mongoose = require('mongoose');
+let Schema = mongoose.Schema;
 
-var BookInstanceSchema = new Schema (
+let BookInstanceSchema = new Schema (
     {
         book: {type: Schema.Types.ObjectId, ref: 'Book', required: true},
         imprint: {type: String, required: true},

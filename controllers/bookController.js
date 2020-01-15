@@ -1,10 +1,12 @@
-const {body, validationResult} = require('express-validator/check');
-const {sanitizeBody} = require('express-validator/filter');
-var Book = require('../models/book');
-var Author = require('../models/author');
-var Genre = require('../models/genre');
-var BookInstance = require('../models/bookinstance');
-var async = require('async');
+const {body, validationResult} = require('express-validator');
+const {sanitizeBody} = require('express-validator');
+const Book = require('../models/book');
+const Author = require('../models/author');
+const Genre = require('../models/genre');
+const BookInstance = require('../models/bookinstance');
+const async = require('async');
+const session = require('express-session');
+
 
 exports.index = function(req, res) {   
     
@@ -21,11 +23,15 @@ exports.index = function(req, res) {
         author_count: function(callback) {
             Author.countDocuments({}, callback);
         },
-        genre_count: function(callback) {
-            Genre.countDocuments({}, callback);
+        genre_count: function(callback) {   
+            Genre.countDocuments({}, callback);   
         }
     }, function(err, results) {
-        res.render('index', { title: 'Local Library Home', error: err, data: results });
+        res.render('index', 
+            { title: 'Local Library Home', 
+            error: err, 
+            data: results}
+        );
     });
 };
 
@@ -36,7 +42,10 @@ exports.book_list = function(req, res, next) {
     .exec((err, list_books) => {
         if (err) {return next(err);}
         //Successful, so render
-        res.render('book_list', {title: 'Book List', book_list: list_books});
+        
+        res.render('book_list', 
+            {title: 'Book List', 
+            book_list: list_books});
     });
 };
 
@@ -57,15 +66,14 @@ exports.book_detail = (req, res, next) => {
     (err, results) => {
         if (err) {return next(err);}
         if(results.book==null) {//no results
-            var err = new Error('Book not found');
+            let err = new Error('Book not found');
             err.status = 400;
             return next(err);
         }
         //Successfull , so render
         res.render('book_detail', {title: results.book.title, 
             book: results.book, 
-            book_instances: results.book_instance
-            }
+            book_instances: results.book_instance}
         );
     });
 };
@@ -87,8 +95,7 @@ exports.book_create_get = (req, res, next) => {
         res.render('book_form', 
             {title: 'Create Book', 
             authors: results.authors, 
-            genres: results.genres
-            }
+            genres: results.genres}
         );
     });
     
@@ -121,18 +128,16 @@ exports.book_create_post = [
     // Process request after validation and sanitization
     (req, res, next) => {
         // Extract the validation errors from a request
-        const errors = validationResult(req);
+        let errors = validationResult(req);
 
         // Create a Book object with the escaped and trimmed data
 
-        var book = new Book (
+        let book = new Book (
             { title: req.body.title,
               author: req.body.author,
               summary: req.body.summary,
               isbn: req.body.isbn,
-              genre: req.body.genre
-
-            }
+              genre: req.body.genre}
         );
         
         if (!errors.isEmpty()){
@@ -164,10 +169,8 @@ exports.book_create_post = [
                          authors: results.authors, 
                          genres: results.genres, 
                          book: book, 
-                        errors: errors.array()
-                        }
-                    )
-                    
+                         errors: errors.array()}
+                    )    
                 });
                 return;
             }
@@ -266,20 +269,24 @@ exports.book_update_get = function(req, res, next) {
         }, function(err, results) {
             if (err) { return next(err); }
             if (results.book==null) { // No results.
-                var err = new Error('Book not found');
+                let err = new Error('Book not found');
                 err.status = 404;
                 return next(err);
             }
             // Success.
             // Mark our selected genres as checked.
-            for (var all_g_iter = 0; all_g_iter < results.genres.length; all_g_iter++) {
-                for (var book_g_iter = 0; book_g_iter < results.book.genre.length; book_g_iter++) {
+            for (let all_g_iter = 0; all_g_iter < results.genres.length; all_g_iter++) {
+                for (let book_g_iter = 0; book_g_iter < results.book.genre.length; book_g_iter++) {
                     if (results.genres[all_g_iter]._id.toString()==results.book.genre[book_g_iter]._id.toString()) {
                         results.genres[all_g_iter].checked='true';
                     }
                 }
             }
-            res.render('book_form', { title: 'Update Book', authors: results.authors, genres: results.genres, book: results.book });
+            res.render('book_form', 
+                { title: 'Update Book', 
+                authors: results.authors, 
+                genres: results.genres, 
+                book: results.book });
         });
 
 };
@@ -315,10 +322,10 @@ exports.book_update_post = [
     (req, res, next) => {
 
         // Extract the validation errors from a request.
-        const errors = validationResult(req);
+        let errors = validationResult(req);
 
         // Create a Book object with escaped/trimmed data and old id.
-        var book = new Book(
+        let book = new Book(
           { title: req.body.title,
             author: req.body.author,
             summary: req.body.summary,
@@ -347,13 +354,18 @@ exports.book_update_post = [
                         results.genres[i].checked='true';
                     }
                 }
-                res.render('book_form', { title: 'Update Book',authors: results.authors, genres: results.genres, book: book, errors: errors.array() });
+                res.render('book_form',
+                     { title: 'Update Book',
+                     authors: results.authors, 
+                     genres: results.genres, 
+                     book: book, 
+                     errors: errors.array()});
             });
             return;
         }
         else {
             // Data from form is valid. Update the record.
-            Book.findByIdAndUpdate(req.params.id, book, {}, function (err,thebook) {
+            Book.findByIdAndUpdate(req.params.id, book, {}, function (err, thebook) {
                 if (err) { return next(err); }
                    // Successful - redirect to book detail page.
                    res.redirect(thebook.url);

@@ -5,20 +5,24 @@
   "scripts": {
     "start": "node ./bin/www",
     "devstart": "nodemon ./bin/www",
-    "serverstart": "SET DEBUG=express-locallibrary:* & npm run devstart"
+    "serverstart": "SET NODE_ENV=production & SET DEBUG=express-locallibrary:* & npm run devstart"
   },
   "dependencies": {
     "async": "^3.1.0",
+    "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^8.2.0",
     "express": "~4.16.1",
+    "express-session": "^1.17.0",
     "express-validator": "^6.3.1",
     "http-errors": "~1.6.3",
+    "jsonwebtoken": "^8.5.1",
     "moment": "^2.24.0",
     "mongoose": "^5.8.3",
+    "mongoose-type-email": "^1.0.11",
     "morgan": "~1.9.1",
-    "pug": "2.0.0-beta11"
+    "pug": "^2.0.4"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"

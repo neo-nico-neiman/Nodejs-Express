@@ -1,15 +1,16 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
 //Require controller modules
-var book_controller = require('../controllers/bookController');
-var author_controller = require('../controllers/authorController');
-var book_instance_controller = require('../controllers/bookInstanceController');
-var genre_controller = require('../controllers/genreController');
+const book_controller = require('../controllers/bookController');
+const author_controller = require('../controllers/authorController');
+const book_instance_controller = require('../controllers/bookInstanceController');
+const genre_controller = require('../controllers/genreController');
+
 
 // BOOK ROUTES //
 
-// GET catalog Home page
+//Get home
 router.get('/', book_controller.index);
 
 // GET request for creating a book

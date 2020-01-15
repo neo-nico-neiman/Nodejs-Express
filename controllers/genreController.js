@@ -1,7 +1,7 @@
 const validator = require('express-validator');
-var Book = require('../models/book');
-var async = require('async');
-var Genre = require('../models/genre');
+const Book = require('../models/book');
+const async = require('async');
+const Genre = require('../models/genre');
 
 // Display list of all Genre.
 exports.genre_list = function(req, res, next) {
@@ -30,7 +30,7 @@ exports.genre_detail = function(req, res, next) {
     }, (err, results) => {
             if(err) {return next(err);}
             if (results.genre==null){//No results
-                var err = new Error('Genre Not Found');
+                let err = new Error('Genre Not Found');
                 err.status = 404;
                 return next(err);
             }
@@ -39,14 +39,15 @@ exports.genre_detail = function(req, res, next) {
             res.render('genre_detail', 
                 {title: 'Genre Detail', 
                 genre: results.genre, 
-                genre_books: results.genre_books } 
+                genre_books: results.genre_books} 
             );
     });
 };
 
 // Display Genre create form on GET.
 exports.genre_create_get = function(req, res, next) {
-    res.render('genre_form', {title: 'Create Genre'});
+    res.render('genre_form', 
+        {title: 'Create Genre'});
 };
 
 // Handle Genre create on POST.
@@ -62,10 +63,10 @@ exports.genre_create_post = [
     (req, res, next) => {
 
         //Extract the validation errors from a request
-        const errors = validator.validationResult(req);
+        let errors = validator.validationResult(req);
 
         //Create a genre object with escaped and trimmed data
-        var genre = new Genre(
+        let genre = new Genre(
             {name: req.body.name }
         );
 
@@ -74,7 +75,7 @@ exports.genre_create_post = [
             res.render('genre_form', 
                 {title: 'Create Genre',
                  genre: genre, 
-                 errors: errors.array() }
+                 errors: errors.array()}
             );
             return;
         }
@@ -118,9 +119,9 @@ exports.genre_delete_post = [
     validator.sanitizeBody('name').escape(), 
     (req, res, next) => {
 
-        const errors = validator.validationResult(req);
+        let errors = validator.validationResult(req);
 
-        var genre = new Genre(
+        let genre = new Genre(
             {name: req.body.name }
         );
 
@@ -128,8 +129,7 @@ exports.genre_delete_post = [
             res.render('genre_form_delete', 
                 {title: 'Genre Delete', 
                 genre: genre, 
-                errors: errors.array()
-                }
+                errors: errors.array()}
             );
             return;
         }
@@ -140,7 +140,7 @@ exports.genre_delete_post = [
             .exec((err, results) => {
                 if(err) {return next(err);}
                 if(results==null) {
-                    var err = new Error('No genre with this name');
+                    let err = new Error('No genre with this name');
                     err.status = 404;
                     return next(err);
                 }

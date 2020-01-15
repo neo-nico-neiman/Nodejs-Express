@@ -1,8 +1,8 @@
-const {body, validationResult} = require('express-validator/check');
-const {sanitizeBody} = require('express-validator/filter');
-var async = require('async');
-var Books = require('../models/book');
-var Author = require('../models/author');
+const {body, validationResult} = require('express-validator');
+const {sanitizeBody} = require('express-validator');
+const async = require('async');
+const Books = require('../models/book');
+const Author = require('../models/author');
 
 // Display list of all Authors.
 exports.author_list = function(req, res, next) {
@@ -14,11 +14,9 @@ exports.author_list = function(req, res, next) {
             //Successfull, so render
             res.render('author_list', 
                 { title: 'Author List', 
-                all_author: author_list
-                }
+                all_author: author_list}
             );
         })
-
 };
 
 // Display detail page for a specific Author.
@@ -35,23 +33,24 @@ exports.author_detail = (req, res, next) => {
         }, (err, results) => {
             if(err) {return next(err);}
             if(results.author==null) {
-                var err = new Error('Author not found');
+                let err = new Error('Author not found');
                 err.status = 404;
                 return (next(err));
             }
             res.render('author_detail', {title: 'Author Detail', 
                 author: results.author, 
-                author_books: results.authors_books
+                author_books: results.authors_books                
                 }
             );
         });
-
     };
 
 
 // Display Author create form on GET.
 exports.author_create_get = function(req, res) {
-    res.render('author_form', {title: 'Create Author'});
+    res.render('author_form', 
+        {title: 'Create Author'}
+    );
 };
 
 // Handle Author create on POST.
@@ -86,14 +85,14 @@ exports.author_create_post = [
     (req, res, next) => {
 
         //Extract the validation errors from a request
-        const errors = validationResult(req);
+        let errors = validationResult(req);
 
         if(!errors.isEmpty()) {
             //There are errors. Render form with sanitized values
             res.render('author_form',
                 {title: 'Create Author',
                 author: req.body,
-                errors: errors.array() }
+                errors: errors.array()}
             );
             return;
         }
@@ -101,7 +100,7 @@ exports.author_create_post = [
             //Data form is valid
 
             //Create Author object with escaped and trimmed data
-            var author = new Author(
+            let author = new Author(
                 {
                     first_name: req.body.first_name,
                     family_name: req.body.family_name,
@@ -181,7 +180,8 @@ exports.author_delete_post = (req, res, next) => {
             res.render('author_delete', 
                 { title: 'Delete Author', 
                 author: results.author, 
-                author_books: results.authors_books } );
+                author_books: results.authors_books} 
+            );
             return;
         }
         else {

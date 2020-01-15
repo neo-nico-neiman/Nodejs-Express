@@ -1,0 +1,37 @@
+extends login_layout
+
+block content
+    
+    div(class='wrapper')
+    div(class='form-signin')
+      h4= title
+
+      if undefined !== message
+        if message instanceof Array
+          each msg in message
+            p.text-danger #{msg.msg}
+          else
+            p
+        else
+          p.text-danger #{message}
+      
+      form(action='/', method='POST')
+        div(class='form-group')
+          label(for='username') Username
+          input(class='form-control' type='text',name='username' placeholder='Username' autofocus)
+        div(class='form-group')    
+          label(for='password') Password
+          input(class='form-control' type='password',name='password' placeholder='Password')
+        div(class='form-group')  
+          div(class='text-right')
+            label(class='form-check-label') Remember me 
+              input(type='checkbox') 
+        div(class='form-group')
+          div(class='text-right')
+            button.btn.btn-primary(type='submit') Sign in
+            a(class='btn' href='/register')
+              button.btn.btn-secondary(type='button')  Register
+        hr
+        h6 To obtain full access, send an email to niconeiman@gmail.com with the subject #[strong "Local Library Access"]. Thank you! 
+        hr            
+        

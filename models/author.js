@@ -1,8 +1,8 @@
-var moment = require('moment');
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const moment = require('moment');
+const mongoose = require('mongoose');
+let Schema = mongoose.Schema;
 
-var AuthorSchema = new Schema(
+let AuthorSchema = new Schema(
     {
         first_name: {type: String, required: true, max: 100},
         family_name: {type: String, required: true, max: 100},
@@ -23,7 +23,7 @@ We want to make sure we handle the exception by
 returning an empty string for that case
 */
 
-    var fullname = '';
+    let fullname = '';
     if (this.first_name && this.family_name) {
         fullname = this.family_name + ', ' + this.first_name
     }
@@ -63,6 +63,6 @@ AuthorSchema
     return '/catalog/author/' + this._id;
 });
 
-//Expor model
+//Export model
 module.exports = mongoose.model('Author', AuthorSchema);
 

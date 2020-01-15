@@ -1,8 +1,8 @@
-var async = require('async');
+const async = require('async');
 const { body,validationResult } = require('express-validator');
 const { sanitizeBody } = require('express-validator');
-var Book = require('../models/book');
-var BookInstance = require('../models/bookinstance');
+const Book = require('../models/book');
+const BookInstance = require('../models/bookinstance');
 
 
 // Display list of all BookInstances.
@@ -15,8 +15,7 @@ exports.bookinstance_list = function(req, res, next) {
             res.render('bookinstance_list', 
                 { 
                 title: 'Book Instance List', 
-                bookinstance_list: list_bookinstances
-                }
+                bookinstance_list: list_bookinstances}
             );
         });
 };
@@ -28,14 +27,13 @@ exports.bookinstance_detail = function(req, res, next) {
         .exec((err, bookinstance) => {
             if(err){ return next(err);}
             if(bookinstance==null){
-                var err = new Error('Book copy not found')
+                let err = new Error('Book copy not found')
                 err.status = 404;
                 return next(err);
             }
             res.render('bookinstance_detail', 
                 {title: 'Copy: '+bookinstance.book.title,
-                bookinstance: bookinstance
-                }
+                bookinstance: bookinstance}
             );
         });
     
@@ -73,10 +71,10 @@ exports.bookinstance_create_post = [
     (req, res, next) => {
 
         // Extract the validation errors from a request.
-        const errors = validationResult(req);
+        let errors = validationResult(req);
 
         // Create a BookInstance object with escaped and trimmed data.
-        var bookinstance = new BookInstance(
+        let bookinstance = new BookInstance(
           { book: req.body.book,
             imprint: req.body.imprint,
             status: req.body.status,
@@ -94,7 +92,7 @@ exports.bookinstance_create_post = [
                         book_list: books, 
                         selected_book: bookinstance.book._id, 
                         errors: errors.array(), 
-                        bookinstance: bookinstance }
+                        bookinstance: bookinstance}
                     );
             });
             return;
@@ -148,7 +146,8 @@ exports.bookinstance_delete_post = (req, res, next) => {
                     {title: 'Delete Instance', 
                     bookinstance: results.bookinstance, 
                     message: ['This action is not recommended!.', 
-                            'First, retrieve this book instance from the library member.']})
+                            'First, retrieve this book instance from the library member.']
+                    })
             }
             else{
                 BookInstance.findByIdAndRemove(req.body.bookinstanceid, function deleteBookInstance (err) {
@@ -177,7 +176,7 @@ exports.bookinstance_update_get = function(req, res, next) {
         (err, results) => {
         if (err) {return next(err); }
         if (results.bookinstance == null) {
-            var err = new Error ('Book Instance not found');
+            let err = new Error ('Book Instance not found');
             err.status = 404;
             return next(err);
         }
@@ -207,10 +206,10 @@ exports.bookinstance_update_post = [
     (req, res, next) => {
 
         // Extract the validation errors from a request.
-        const errors = validationResult(req);
+        let errors = validationResult(req);
 
         // Create a BookInstance object with escaped and trimmed data.
-        var bookinstance = new BookInstance(
+        let bookinstance = new BookInstance(
           { book: req.body.book,
             imprint: req.body.imprint,
             status: req.body.status,
@@ -228,7 +227,7 @@ exports.bookinstance_update_post = [
                         { title: 'Create BookInstance', 
                         book_list: books, 
                         errors: errors.array(), 
-                        bookinstance: bookinstance }
+                        bookinstance: bookinstance}
                     );
             });
             return;

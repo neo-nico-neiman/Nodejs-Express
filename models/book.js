@@ -1,6 +1,6 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var BookSchema = new Schema (
+const mongoose = require('mongoose');
+let Schema = mongoose.Schema;
+let BookSchema = new Schema (
     {
         title: {type: String, required: true},
         author: {type: Schema.Types.ObjectId, ref: 'Author', required: true},

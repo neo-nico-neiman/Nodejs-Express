@@ -1,21 +1,23 @@
-var config = require('./config.js');
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const config = require('./config.js');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const session = require('express-session');
+const usersRouter = require('./routes/users');
+const catalogRouter = require('./routes/catalog');
+const loginRouter = require('./routes/login');
+const loginController = require('./controllers/loginController');
+const auth = require('./controllers/auth');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var catalogRouter = require('./routes/catalog');
-
-var app = express();
+const app = express();
 
 //Set up Mongoose connection
-var mongoose = require('mongoose');
-var mongoDB = config.mongoDB;
+const mongoose = require('mongoose');
+let mongoDB = config.mongoDB;
 mongoose.connect(mongoDB, {useNewUrlParser: true});
-var db = mongoose.connection;
+let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 
@@ -31,9 +33,26 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/catalog', catalogRouter);
+//set up session
+app.use(
+  session({
+    secret: process.env.session_secret,
+    name: process.env.session_name,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 1000 * 60 * 15,
+      sameSite: true 
+    }
+  })
+);
+
+
+//Redirect to login Form
+app.use('/', loginRouter);
+app.use('/logout', loginController.logout);
+app.use('/users', auth, usersRouter);
+app.use('/catalog', auth, catalogRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
